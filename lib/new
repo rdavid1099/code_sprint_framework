@@ -1,28 +1,42 @@
 #!/bin/bash
 
-while [[ "$#" -gt "0" ]]; do
-  param=$(echo $1 | cut -d "=" -f 1)
-  args=$(echo $1 | cut -d "=" -f 2)
-  case $param in
-    --language | -l)
-      # Determine language -- default to JS
-    ;;
-    --name | -n)
-      # Assigns directory/ project/ repo name -- Default to simple_sprint
-    ;;
-    --origin | -o)
-      # Assigns origin to git and sets up remote pushing -- Defaults to nothing
-    ;;
-    --time | -t)
-      # Amount of time allowed for the sprint (in minutes) -- Defaults to 60
-    ;;
-    --frequency | -f)
-      # Frequency of auto-commits for tracking progress (in minutes) -- Defaults to 10
-    ;;
-    *)
-      # Unknown Command Error -- Displays CLI manual of valid commands
-    ;;
-  esac
-done
+assign_variables() {
+  while [[ "$#" -gt "0" ]]; do
+    param=$(echo $1 | cut -d "=" -f 1)
+    args=$(echo $1 | cut -d "=" -f 2)
+    case $param in
+      --language | -l)
+        echo "language"
+        exit
+        # Determine language -- default to JS
+      ;;
+      --filename | -fn)
+        echo "name"
+        exit
+        # Assigns directory/ project/ repo name -- Default to simple_sprint
+      ;;
+      --origin | -o)
+        echo "origin"
+        exit
+        # Assigns origin to git and sets up remote pushing -- Defaults to nothing
+      ;;
+      --time | -t)
+        echo "time"
+        exit
+        # Amount of time allowed for the sprint (in minutes) -- Defaults to 60
+      ;;
+      --frequency | -f)
+        echo "frequency"
+        exit
+        # Frequency of auto-commits for tracking progress (in minutes) -- Defaults to 10
+      ;;
+      *)
+        echo "error"
+        exit
+        # Unknown Command Error -- Displays CLI manual of valid commands
+      ;;
+    esac
+  done
+}
 
 assign_variables $@
