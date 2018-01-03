@@ -1,6 +1,7 @@
 #!/bin/bash
 export PARENT_PATH=$(cd "$(dirname "$0")"; pwd)
 source $PARENT_PATH/lib/shared/global_vars.sh
+source $PARENT_PATH/.output/standard.sh
 
 command=$(echo $1 | tr '[:upper:]' '[:lower:]')
 if [ "$#" -eq "0" ] || [ "$command" = "--help" -o "$command" = "-h" ]; then
