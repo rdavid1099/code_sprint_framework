@@ -1,0 +1,92 @@
+#!/bin/bash
+
+source $PARENT_PATH/lib/shared/global_vars.sh
+source $PARENT_PATH/.output/standard.sh
+source $PARENT_PATH/.output/error.sh
+
+LANGUAGES=(JavaScript Ruby Java Python)
+LANGUAGE=""
+FILENAME=""
+ORIGIN=""
+TIME=""
+FREQUENCY=""
+
+assign_language() {
+  for ((i=0; i<${#LANGUAGES[@]}; i++)); do
+    if [[ "$1" = "$(echo ${LANGUAGES[$i]} | tr '[:upper:]' '[:lower:]')" ]]; then
+      LANGUAGE=$i
+      break
+    fi
+  done
+  [[ "$LANGUAGE" = "" ]] && unsupported_language $1
+}
+
+check_value() {
+  vals='^[0-9]+$'
+  if ! [[ $2 =~ $vals ]] || [[ $2 -lt 1 ]] || [[ $2 -gt 255 ]]; then nan_error $1; fi
+}
+
+assign() {
+  eval "[[ \"\$${1}\" != \"\" ]] && repeating_params $1"
+  [ "$1" = "TIME" -o "$1" = "FREQUENCY" ] && check_value $1 $2
+  if [[ "$1" = "LANGUAGE" ]]; then
+    assign_language $2
+  else
+    eval "${1}=\$2"
+  fi
+}
+
+assign_variables() {
+  while [[ "$#" -gt "0" ]]; do
+    param=$(echo $1 | cut -d "=" -f 1)
+    args=$(echo $1 | cut -d "=" -f 2)
+    shift
+    if [ "$param" = "-l" -o "$param" = "-fn" -o "$param" = "-o" -o "$param" = "-t" -o "$param" = "-f" ]; then
+      args=$1
+      shift
+    fi
+    case $param in
+      --language | -l)
+        assign LANGUAGE $args
+      ;;
+      --filename | -fn)
+        assign FILENAME $args
+      ;;
+      --origin | -o)
+        assign ORIGIN $args
+      ;;
+      --time | -t)
+        assign TIME $args
+      ;;
+      --frequency | -f)
+        assign FREQUENCY $args
+      ;;
+      *)
+        invalid_command $param
+      ;;
+    esac
+  done
+  [[ "$LANGUAGE" = "" ]] && LANGUAGE="0"
+  [[ "$FILENAME" = "" ]] && FILENAME="simple_sprint"
+  [[ "$TIME" = "" ]] && TIME="60"
+  [[ "$FREQUENCY" = "" ]] && FREQUENCY="10"
+  [[ $FREQUENCY -gt $TIME ]] && freq_gt_time_err
+}
+
+build_it() {
+  echo "Building ${LANGUAGES[$LANGUAGE]} sprint named $FILENAME"
+}
+
+git_init() {
+  [[ "$ORIGIN" = "" ]] && echo "Initializing git repository without origin" || echo "Initializing git repository with origin '${ORIGIN}'"
+}
+
+ready_to_begin() {
+  echo "Sprint foundation built with a $TIME minute time limit and auto-commits every $FREQUENCY minutes"
+  echo "Run 'sprintr start ${FILENAME}' to begin the sprint"
+}
+
+assign_variables $@
+build_it
+git_init
+ready_to_begin

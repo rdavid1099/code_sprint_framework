@@ -1,0 +1,21 @@
+#!/bin/bash
+export PARENT_PATH=$(cd "$(dirname "$0")"; pwd)
+source $PARENT_PATH/lib/shared/global_vars.sh
+source $PARENT_PATH/.output/standard.sh
+source $PARENT_PATH/.output/error.sh
+
+command=$(echo $1 | tr '[:upper:]' '[:lower:]')
+if [ "$#" -eq "0" ] || [ "$command" = "--help" -o "$command" = "-h" ]; then
+  display_manual
+else
+  shift
+  args=$(echo $@ | tr '[:upper:]' '[:lower:]')
+  case $command in
+    new)
+      $NEW $args
+    ;;
+    *)
+      invalid_command $command
+    ;;
+  esac
+fi
