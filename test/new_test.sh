@@ -8,6 +8,9 @@ setup()
   export PARENT_PATH=$PWD
 }
 
-@test "it does something" {
+@test "it assigns default values if no params are passed" {
   run bash $NEW
+
+  [ "$status" -eq "0" ]
+  [ "${lines[0]}" = "Building JavaScript sprint named simple_sprint" ]
 }

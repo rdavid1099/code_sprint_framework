@@ -7,6 +7,9 @@ setup()
   export ENV='test'
 }
 
-@test "does something" {
+@test "it displays manual when no params are passed" {
   run bash $SPRINTR
+
+  [ "$status" -eq "0" ]
+  [ "${lines[0]}" = "Welcome to Sprintr: Code sprint launcher client" ]
 }
