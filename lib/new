@@ -12,7 +12,6 @@ TIME=""
 FREQUENCY=""
 
 assign_language() {
-  [[ "$LANGUAGE" != "" ]] && repeating_params --language
   for ((i=0; i<${#LANGUAGES[@]}; i++)); do
     if [[ "$1" = "$(echo ${LANGUAGES[$i]} | tr '[:upper:]' '[:lower:]')" ]]; then
       LANGUAGE=$i
@@ -22,9 +21,13 @@ assign_language() {
   [[ "$LANGUAGE" = "" ]] && unsupported_language $1
 }
 
-assign_filename() {
-  [[ "$FILENAME" != "" ]] && repeating_params --filename
-  FILENAME=$1
+assign() {
+  eval "[[ \"\$${1}\" != \"\" ]] && repeating_params $1"
+  if [[ "$1" = "LANGUAGE" ]]; then
+    assign_language $2
+  else
+    eval "${1}=\$2"
+  fi
 }
 
 assign_variables() {
@@ -38,13 +41,13 @@ assign_variables() {
     fi
     case $param in
       --language | -l)
-        assign_language $args
+        assign LANGUAGE $args
       ;;
       --filename | -fn)
-        assign_filename $args
+        assign FILENAME $args
       ;;
       --origin | -o)
-        # Assigns origin to git and sets up remote pushing -- Defaults to nothing
+        assign ORIGIN $args
       ;;
       --time | -t)
         # Amount of time allowed for the sprint (in minutes) -- Defaults to 60
@@ -67,5 +70,10 @@ build_it() {
   echo "Building ${LANGUAGES[$LANGUAGE]} sprint named $FILENAME"
 }
 
+git_init() {
+  [[ "$ORIGIN" = "" ]] && echo "Initializing git repository without origin" || echo "Initializing git repository with origin '${ORIGIN}'"
+}
+
 assign_variables $@
 build_it
+git_init

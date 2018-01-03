@@ -40,7 +40,7 @@ setup()
   run bash $NEW -l ruby --language=javascript
 
   [ "$status" -eq "1" ]
-  [ "${lines[0]}" = "ERROR: Multiple parameters passed for '--language'. Only one argument can be passed for each flag." ]
+  [ "${lines[0]}" = "ERROR: Multiple parameters passed for 'LANGUAGE'. Only one argument can be passed for each flag." ]
 }
 
 @test "it assigns filename value when --filename flag is passed" {
@@ -61,5 +61,26 @@ setup()
   run bash $NEW -fn foo --filename=bar
 
   [ "$status" -eq "1" ]
-  [ "${lines[0]}" = "ERROR: Multiple parameters passed for '--filename'. Only one argument can be passed for each flag." ]
+  [ "${lines[0]}" = "ERROR: Multiple parameters passed for 'FILENAME'. Only one argument can be passed for each flag." ]
+}
+
+@test "it assigns origin value when --origin flag is passed" {
+  run bash $NEW --origin=remote@gittest.com:foo/bar.git
+
+  [ "$status" -eq "0" ]
+  [ "${lines[1]}" = "Initializing git repository with origin 'remote@gittest.com:foo/bar.git'" ]
+}
+
+@test "it assigns origin value when -o flag is passed" {
+  run bash $NEW -o remote@gittest.com:foo/bar.git
+
+  [ "$status" -eq "0" ]
+  [ "${lines[1]}" = "Initializing git repository with origin 'remote@gittest.com:foo/bar.git'" ]
+}
+
+@test "it throws error when multiple origins are passed" {
+  run bash $NEW -o foo --origin=bar
+
+  [ "$status" -eq "1" ]
+  [ "${lines[0]}" = "ERROR: Multiple parameters passed for 'ORIGIN'. Only one argument can be passed for each flag." ]
 }
