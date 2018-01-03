@@ -21,8 +21,14 @@ assign_language() {
   [[ "$LANGUAGE" = "" ]] && unsupported_language $1
 }
 
+check_value() {
+  vals='^[0-9]+$'
+  if ! [[ $2 =~ $vals ]] || [[ $2 -lt 1 ]] || [[ $2 -gt 255 ]]; then nan_error $1; fi
+}
+
 assign() {
   eval "[[ \"\$${1}\" != \"\" ]] && repeating_params $1"
+  [ "$1" = "TIME" -o "$1" = "FREQUENCY" ] && check_value $1 $2
   if [[ "$1" = "LANGUAGE" ]]; then
     assign_language $2
   else
@@ -50,7 +56,7 @@ assign_variables() {
         assign ORIGIN $args
       ;;
       --time | -t)
-        # Amount of time allowed for the sprint (in minutes) -- Defaults to 60
+        assign TIME $args
       ;;
       --frequency | -f)
         # Frequency of auto-commits for tracking progress (in minutes) -- Defaults to 10
@@ -74,6 +80,11 @@ git_init() {
   [[ "$ORIGIN" = "" ]] && echo "Initializing git repository without origin" || echo "Initializing git repository with origin '${ORIGIN}'"
 }
 
+ready_to_begin() {
+  echo "Sprint foundation built with a $TIME minute time limit and auto-commits every $FREQUENCY minutes"
+}
+
 assign_variables $@
 build_it
 git_init
+ready_to_begin

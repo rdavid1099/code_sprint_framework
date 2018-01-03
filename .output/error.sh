@@ -19,3 +19,9 @@ unsupported_language() {
   echo "Terminating Process"
   exit 1
 }
+
+nan_error() {
+  echo "ERROR: '${1}' must be an integer between 1 and 255"
+  echo "Terminating Process"
+  exit 1
+}

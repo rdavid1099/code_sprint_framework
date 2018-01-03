@@ -84,3 +84,45 @@ setup()
   [ "$status" -eq "1" ]
   [ "${lines[0]}" = "ERROR: Multiple parameters passed for 'ORIGIN'. Only one argument can be passed for each flag." ]
 }
+
+@test "it assigns time value when --time flag is passed" {
+  run bash $NEW --time=45
+
+  [ "$status" -eq "0" ]
+  [ "${lines[2]}" = "Sprint foundation built with a 45 minute time limit and auto-commits every 10 minutes" ]
+}
+
+@test "it assigns origin value when -t flag is passed" {
+  run bash $NEW -t 75
+
+  [ "$status" -eq "0" ]
+  [ "${lines[2]}" = "Sprint foundation built with a 75 minute time limit and auto-commits every 10 minutes" ]
+}
+
+@test "it throws error if number not passed" {
+  run bash $NEW -t foobar
+
+  [ "$status" -eq "1" ]
+  [ "${lines[0]}" = "ERROR: 'TIME' must be an integer between 1 and 255" ]
+}
+
+@test "it throws error if number less than 1 is passed" {
+  run bash $NEW -t 0
+
+  [ "$status" -eq "1" ]
+  [ "${lines[0]}" = "ERROR: 'TIME' must be an integer between 1 and 255" ]
+}
+
+@test "it throws error if number more than 255 is passed" {
+  run bash $NEW -t 1234
+
+  [ "$status" -eq "1" ]
+  [ "${lines[0]}" = "ERROR: 'TIME' must be an integer between 1 and 255" ]
+}
+
+@test "it throws error when multiple times are passed" {
+  run bash $NEW -t 10 --time=15
+
+  [ "$status" -eq "1" ]
+  [ "${lines[0]}" = "ERROR: Multiple parameters passed for 'TIME'. Only one argument can be passed for each flag." ]
+}
