@@ -147,3 +147,13 @@ setup()
   [ "$status" -eq "1" ]
   [ "${lines[0]}" = "ERROR: Commit frequency must be less than the time of the sprint" ]
 }
+
+@test "it creates a foundation with all params passed" {
+  run bash $NEW -fn test_sprint -l ruby -o remote@gittest.com:foo/bar.git -t 75 -f 15
+
+  [ "$status" -eq "0" ]
+  [ "${lines[0]}" = "Building Ruby sprint named test_sprint" ]
+  [ "${lines[1]}" = "Initializing git repository with origin 'remote@gittest.com:foo/bar.git'" ]
+  [ "${lines[2]}" = "Sprint foundation built with a 75 minute time limit and auto-commits every 15 minutes" ]
+  [ "${lines[3]}" = "Run 'sprintr start test_sprint' to begin the sprint" ]
+}

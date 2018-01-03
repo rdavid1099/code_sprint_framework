@@ -83,6 +83,7 @@ git_init() {
 
 ready_to_begin() {
   echo "Sprint foundation built with a $TIME minute time limit and auto-commits every $FREQUENCY minutes"
+  echo "Run 'sprintr start ${FILENAME}' to begin the sprint"
 }
 
 assign_variables $@
