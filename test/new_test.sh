@@ -126,3 +126,24 @@ setup()
   [ "$status" -eq "1" ]
   [ "${lines[0]}" = "ERROR: Multiple parameters passed for 'TIME'. Only one argument can be passed for each flag." ]
 }
+
+@test "it assigns frequency value when --frequency flag is passed" {
+  run bash $NEW --frequency=15
+
+  [ "$status" -eq "0" ]
+  [ "${lines[2]}" = "Sprint foundation built with a 60 minute time limit and auto-commits every 15 minutes" ]
+}
+
+@test "it assigns origin value when -f flag is passed" {
+  run bash $NEW -f 5
+
+  [ "$status" -eq "0" ]
+  [ "${lines[2]}" = "Sprint foundation built with a 60 minute time limit and auto-commits every 5 minutes" ]
+}
+
+@test "it throws error if frequency is greater than time" {
+  run bash $NEW -f 15 --time=10
+
+  [ "$status" -eq "1" ]
+  [ "${lines[0]}" = "ERROR: Commit frequency must be less than the time of the sprint" ]
+}

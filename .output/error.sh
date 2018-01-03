@@ -25,3 +25,9 @@ nan_error() {
   echo "Terminating Process"
   exit 1
 }
+
+freq_gt_time_err() {
+  echo "ERROR: Commit frequency must be less than the time of the sprint"
+  echo "Terminating Process"
+  exit 1
+}

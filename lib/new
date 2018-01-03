@@ -59,7 +59,7 @@ assign_variables() {
         assign TIME $args
       ;;
       --frequency | -f)
-        # Frequency of auto-commits for tracking progress (in minutes) -- Defaults to 10
+        assign FREQUENCY $args
       ;;
       *)
         invalid_command $param
@@ -70,6 +70,7 @@ assign_variables() {
   [[ "$FILENAME" = "" ]] && FILENAME="simple_sprint"
   [[ "$TIME" = "" ]] && TIME="60"
   [[ "$FREQUENCY" = "" ]] && FREQUENCY="10"
+  [[ $FREQUENCY -gt $TIME ]] && freq_gt_time_err
 }
 
 build_it() {
