@@ -1,42 +1,45 @@
 #!/bin/bash
+source $PARENT_PATH/lib/shared/global_vars.sh
+source $PARENT_PATH/.output/standard.sh
+source $PARENT_PATH/.output/error.sh
 
 assign_variables() {
+  LANGUAGE="JavaScript"
+  FILENAME="simple_sprint"
+  ORIGIN=""
+  TIME="60"
+  FREQUENCY="10"
+
   while [[ "$#" -gt "0" ]]; do
     param=$(echo $1 | cut -d "=" -f 1)
     args=$(echo $1 | cut -d "=" -f 2)
+    shift
     case $param in
       --language | -l)
-        echo "language"
-        exit
         # Determine language -- default to JS
       ;;
       --filename | -fn)
-        echo "name"
-        exit
         # Assigns directory/ project/ repo name -- Default to simple_sprint
       ;;
       --origin | -o)
-        echo "origin"
-        exit
         # Assigns origin to git and sets up remote pushing -- Defaults to nothing
       ;;
       --time | -t)
-        echo "time"
-        exit
         # Amount of time allowed for the sprint (in minutes) -- Defaults to 60
       ;;
       --frequency | -f)
-        echo "frequency"
-        exit
         # Frequency of auto-commits for tracking progress (in minutes) -- Defaults to 10
       ;;
       *)
-        echo "error"
-        exit
-        # Unknown Command Error -- Displays CLI manual of valid commands
+        invalid_command $param
       ;;
     esac
   done
 }
 
+build_it() {
+  
+}
+
 assign_variables $@
+build_it
