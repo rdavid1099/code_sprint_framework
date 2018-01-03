@@ -14,3 +14,10 @@ setup()
   [ "$status" -eq "0" ]
   [ "${lines[0]}" = "Building JavaScript sprint named simple_sprint" ]
 }
+
+@test "it assigns language value when proper flag is passed" {
+  run bash $NEW --language=ruby
+
+  [ "$status" -eq "0" ]
+  [ "${lines[0]}" = "Building Ruby sprint named simple_sprint" ]  
+}

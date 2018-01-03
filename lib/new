@@ -1,22 +1,39 @@
 #!/bin/bash
+
 source $PARENT_PATH/lib/shared/global_vars.sh
 source $PARENT_PATH/.output/standard.sh
 source $PARENT_PATH/.output/error.sh
 
-assign_variables() {
-  LANGUAGE="JavaScript"
-  FILENAME="simple_sprint"
-  ORIGIN=""
-  TIME="60"
-  FREQUENCY="10"
+LANGUAGES=(JavaScript Ruby Java Python)
+LANGUAGE=""
+FILENAME=""
+ORIGIN=""
+TIME=""
+FREQUENCY=""
 
+assign_language() {
+  [[ "$LANGUAGE" != "" ]] && repeating_params --language
+  for ((i=0; i<${#LANGUAGES[@]}; i++)); do
+    if [[ "$1" = "$(echo ${LANGUAGES[$i]} | tr '[:upper:]' '[:lower:]')" ]]; then
+      LANGUAGE=$i
+      break
+    fi
+  done
+  [[ "$LANGUAGE" = "" ]] && unsupported_language $1
+}
+
+assign_variables() {
   while [[ "$#" -gt "0" ]]; do
     param=$(echo $1 | cut -d "=" -f 1)
     args=$(echo $1 | cut -d "=" -f 2)
     shift
+    if [ "$param" = "-l" -o "$param" = "-fn" -o "$param" = "-o" -o "$param" = "-t" -o "$param" = "-f" ]; then
+      args=$1
+      shift
+    fi
     case $param in
       --language | -l)
-        # Determine language -- default to JS
+        assign_language $args
       ;;
       --filename | -fn)
         # Assigns directory/ project/ repo name -- Default to simple_sprint
@@ -35,10 +52,14 @@ assign_variables() {
       ;;
     esac
   done
+  [[ "$LANGUAGE" = "" ]] && LANGUAGE="0"
+  [[ "$FILENAME" = "" ]] && FILENAME="simple_sprint"
+  [[ "$TIME" = "" ]] && TIME="60"
+  [[ "$FREQUENCY" = "" ]] && FREQUENCY="10"
 }
 
 build_it() {
-  
+  echo "Building ${LANGUAGES[$LANGUAGE]} sprint named $FILENAME"
 }
 
 assign_variables $@
