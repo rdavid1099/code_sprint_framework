@@ -42,3 +42,24 @@ setup()
   [ "$status" -eq "1" ]
   [ "${lines[0]}" = "ERROR: Multiple parameters passed for '--language'. Only one argument can be passed for each flag." ]
 }
+
+@test "it assigns filename value when --filename flag is passed" {
+  run bash $NEW --filename=test_sprint
+
+  [ "$status" -eq "0" ]
+  [ "${lines[0]}" = "Building JavaScript sprint named test_sprint" ]
+}
+
+@test "it assigns filename value when -fn flag is passed" {
+  run bash $NEW -fn test_sprint
+
+  [ "$status" -eq "0" ]
+  [ "${lines[0]}" = "Building JavaScript sprint named test_sprint" ]
+}
+
+@test "it throws error when multiple filenames are passed" {
+  run bash $NEW -fn foo --filename=bar
+
+  [ "$status" -eq "1" ]
+  [ "${lines[0]}" = "ERROR: Multiple parameters passed for '--filename'. Only one argument can be passed for each flag." ]
+}

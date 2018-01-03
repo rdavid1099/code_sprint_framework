@@ -22,6 +22,11 @@ assign_language() {
   [[ "$LANGUAGE" = "" ]] && unsupported_language $1
 }
 
+assign_filename() {
+  [[ "$FILENAME" != "" ]] && repeating_params --filename
+  FILENAME=$1
+}
+
 assign_variables() {
   while [[ "$#" -gt "0" ]]; do
     param=$(echo $1 | cut -d "=" -f 1)
@@ -36,7 +41,7 @@ assign_variables() {
         assign_language $args
       ;;
       --filename | -fn)
-        # Assigns directory/ project/ repo name -- Default to simple_sprint
+        assign_filename $args
       ;;
       --origin | -o)
         # Assigns origin to git and sets up remote pushing -- Defaults to nothing
